@@ -37,7 +37,11 @@
 
 import argparse
 import subprocess
+import shutil
+import path
+from pathlib import Path
 import time
+import datetime
 from termcolor import colored
 
 # Set up the argument parser
@@ -51,12 +55,18 @@ port = parser.parse_args().port
 
 print(colored("test","yellow"))
 
+# Check if loot.hash already exists, if it does, back it up 
+
+if path.exists("loot.hash"):
+	shutil.move("loot.hash", "loot.hash" + str(datetime.datetime.now().timestamp())
+	Path("loot.hash").touch()
+
 print(f"Starting process to read hashes sent to port {port}...")
 
-nc_listener = subprocess.Popen(['nc -lvp 22200 > loot.hash'], shell=True, stdout=subprocess.DEVNULL)
+nc_listener = subprocess.Popen(["nc -lvp 22200 > loot.hash"], shell=True, stdout=subprocess.DEVNULL)
 
 print("Waiting for hashes...")
-
+time.sleep(.5)
 
 # Loop to wait until we get the hashes on the specified port
 # you can test this by running "echo test | nc {HCS-ip} {HCS-port}
@@ -68,4 +78,7 @@ while True:
 		break
 	else:
 		time.sleep(5)
+
+
+# time to crack the hash
 
