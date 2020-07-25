@@ -16,7 +16,7 @@ sudo iwconfig ${wifi_interface} mode monitor
 sudo ifconfig ${wifi_interface} up
 
 # open airodump-ng, monitor for 30 seconds, then  parse output
-sudo airodump-ng -w victims --output-format csv wlan1 --write-interval 15
+sudo airodump-ng -w victims --output-format csv ${wifi_interface} --write-interval 15
 
 # get a list of networks sorted by most powerful first
 # sort -t, -r -n -k9 victims-01.csv | grep -i wpa | sed -n '/, ,\s*$/!p'
