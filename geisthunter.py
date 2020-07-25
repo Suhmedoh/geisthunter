@@ -38,8 +38,8 @@
 import argparse
 import subprocess
 import shutil
-import path
-from pathlib import Path
+from os import path
+import pathlib
 import time
 import datetime
 from termcolor import colored
@@ -48,8 +48,8 @@ from termcolor import colored
 parser = argparse.ArgumentParser(description='A tool to crack wifi passwords using a mobile wifihacking device and a remote server to crack the handshakes.')
 
 parser.add_argument('-w', '--wordlist', metavar=colored('wordlist', 'green'), action="store", required=False, help='Full path to the wordlist you want to use to crack the handshake')
-parser.add_argument('-p', '--port', metavar=colored('port', 'green'), action="store", required=True, help='The port you want to listen on for the handshake; must be the same as the port setup on the wifi-hacking device')
-parser.add_argument('-d', '--device', metavar=colored('device', 'green'), action="store", required=True, help='The ip/hostname of the device you want to send the wifi SSID and password to, usually the WHD, can be something else, if it\'s listening')
+parser.add_argument('-p', '--port', metavar=colored('port', 'green'), action="store", required=False, help='The port you want to listen on for the handshake; must be the same as the port setup on the wifi-hacking device')
+parser.add_argument('-d', '--device', metavar=colored('device', 'green'), action="store", required=False, help='The ip/hostname of the device you want to send the wifi SSID and password to, usually the WHD, can be something else, if it\'s listening')
 
 port = parser.parse_args().port
 
@@ -58,8 +58,9 @@ print(colored("test","yellow"))
 # Check if loot.hash already exists, if it does, back it up 
 
 if path.exists("loot.hash"):
-	shutil.move("loot.hash", "loot.hash" + str(datetime.datetime.now().timestamp())
-	Path("loot.hash").touch()
+	print("loot.hash already exists, renaming...")
+	shutil.move("loot.hash", "loot.hash" + str(datetime.datetime.now().timestamp()))
+	pathlib.Path("loot.hash").touch()
 
 print(f"Starting process to read hashes sent to port {port}...")
 
@@ -69,7 +70,7 @@ print("Waiting for hashes...")
 time.sleep(.5)
 
 # Loop to wait until we get the hashes on the specified port
-# you can test this by running "echo test | nc {HCS-ip} {HCS-port}
+# you can test this by running "echo test | nc {HCS-ip} {HCS-port}" on the WHD 
 while True:
 	hashes = open("loot.hash", "rt")
 	loot = hashes.read()
@@ -78,7 +79,6 @@ while True:
 		break
 	else:
 		time.sleep(5)
-
 
 # time to crack the hash
 
